@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>X-NIX — a hardened mobile OS</title>
+  <meta name="description" content="X-NIX is a hardened, GrapheneOS-derived mobile OS for the Pixel 10 Pro XL, signed with its own keys, with a curated privacy app suite and self-hosted updates."/>
+  <meta name="theme-color" content="#2a0f4a"/>
+  <meta name="color-scheme" content="dark light"/>
+  <meta property="og:title" content="X-NIX — a hardened mobile OS"/>
+  <meta property="og:description" content="Hardened, GrapheneOS-derived mobile OS for the Pixel 10 Pro XL."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="X-NIX"/>
+  <meta property="og:url" content="https://xnix.foxnet.live/"/>
+  <link rel="canonical" href="https://xnix.foxnet.live/"/>
+  <style>
+    :root { color-scheme: dark light; --bg:#140f1c; --fg:#ece6f5; --mut:#b4a9c8;
+            --acc:#b98cff; --acc2:#7a3cc4; --card:#1d1529; --line:#36284d; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+           background:var(--bg); color:var(--fg); line-height:1.65; }
+    a { color:var(--acc); text-decoration:none; } a:hover { text-decoration:underline; }
+    .wrap { max-width:60rem; margin:0 auto; padding:0 1.25rem; }
+    header.hero { background:
+        radial-gradient(1200px 400px at 50% -10%, rgba(122,60,196,.35), transparent 60%),
+        linear-gradient(180deg,#1a1026,#140f1c);
+        border-bottom:1px solid var(--line); padding:4.5rem 0 3.5rem; text-align:center; }
+    .brandmark { font-weight:800; letter-spacing:.28em; color:var(--acc); font-size:1rem; }
+    h1 { font-size:clamp(2.4rem,6vw,4rem); margin:.6rem 0 .4rem; letter-spacing:.01em; }
+    h1 .x { color:var(--acc); }
+    .tag { color:var(--mut); font-size:1.2rem; max-width:40rem; margin:0 auto 2rem; }
+    .cta { display:inline-flex; gap:.6rem; flex-wrap:wrap; justify-content:center; }
+    .btn { display:inline-block; padding:.85rem 1.4rem; border-radius:.6rem; font-weight:600;
+           background:linear-gradient(135deg,var(--acc2),#9a5ce0); color:#fff; border:0; }
+    .btn.secondary { background:transparent; border:1px solid var(--acc2); color:var(--acc); }
+    .btn:hover { text-decoration:none; filter:brightness(1.08); }
+    section { padding:3rem 0; border-bottom:1px solid var(--line); }
+    h2 { font-size:1.6rem; margin-top:0; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); gap:1rem; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:.7rem; padding:1.1rem 1.25rem; }
+    .card h3 { margin:.1rem 0 .4rem; font-size:1.1rem; color:#e3d6ff; }
+    .card p { margin:0; color:var(--mut); font-size:.97rem; }
+    code { background:#241a34; padding:.12rem .4rem; border-radius:.3rem; font-size:.9em; }
+    .note { background:#241036; border:1px solid var(--acc2); border-radius:.6rem; padding:1rem 1.2rem; color:#e3d6ff; }
+    ul.apps { columns:2; gap:2rem; margin:0; padding-left:1.1rem; color:var(--mut); }
+    footer { padding:2.5rem 0 4rem; color:var(--mut); font-size:.9rem; text-align:center; }
+    .pill { display:inline-block; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase;
+            color:var(--acc); border:1px solid var(--acc2); border-radius:999px; padding:.15rem .7rem; }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="brandmark">X&nbsp;·&nbsp;N&nbsp;I&nbsp;X</div>
+      <h1><span class="x">X</span>-NIX</h1>
+      <p class="tag">A hardened, GrapheneOS-derived mobile OS for the Pixel 10&nbsp;Pro&nbsp;XL —
+         signed with its own keys, a curated privacy app suite, and self-hosted updates.</p>
+      <div class="cta">
+        <a class="btn" href="https://flash.foxnet.live/">Install in your browser</a>
+        <a class="btn secondary" href="https://flash.foxnet.live/install/cli/">CLI install guide</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section>
+      <h2>What it is</h2>
+      <p>X-NIX is built on the <a href="https://grapheneos.org/">GrapheneOS</a> hardened Android
+         base and compiled from source for the Pixel 10&nbsp;Pro&nbsp;XL (codename
+         <code>mustang</code>). It keeps GrapheneOS's security model — verified boot, a strong
+         sandbox, and hardware-backed attestation — while shipping its own signing keys, a
+         bundled app set, and two small privileged helper services.</p>
+      <p><span class="pill">Current build 2026101600</span></p>
+    </section>
+
+    <section>
+      <h2>Built on</h2>
+      <div class="grid">
+        <div class="card"><h3>Verified boot, your key</h3><p>Signed end-to-end with X-NIX keys; the bootloader locks to the X-NIX AVB root of trust.</p></div>
+        <div class="card"><h3>Attestation-safe</h3><p>Identity is rebranded for display only — the build fingerprint stays intact so hardware attestation keeps working.</p></div>
+        <div class="card"><h3>Curated app suite</h3><p>A set of privacy and utility apps preinstalled out of the box, no Google services required.</p></div>
+        <div class="card"><h3>Privileged helpers</h3><p>Two minimal native services (interface-pinned networking + a Shizuku-free terminal helper), each in its own SELinux domain.</p></div>
+        <div class="card"><h3>Self-hosted updates</h3><p>Over-the-air updates delivered from <a href="https://ota.foxnet.live/">ota.foxnet.live</a>, verified against the baked-in signing key.</p></div>
+        <div class="card"><h3>Browser install</h3><p>Flash directly from a WebUSB browser — no SDK, no command line required.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Bundled apps</h2>
+      <ul class="apps">
+        <li>Switchboard — port forwarding</li>
+        <li>ShellBox — terminal</li>
+        <li>Agora — assistant</li>
+        <li>CyberKit — network toolkit</li>
+        <li>HeliBoard — keyboard</li>
+        <li>DotGallery — gallery</li>
+        <li>Droidify — F-Droid client</li>
+        <li>Tor Browser</li>
+        <li>Vela — maps</li>
+        <li>Wallet</li>
+        <li>SquircleCE — code editor</li>
+        <li>Haven, Sweep, LovelaceAV, and more</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Install</h2>
+      <p>You need a Pixel 10&nbsp;Pro&nbsp;XL with an unlockable bootloader and a USB cable.</p>
+      <div class="cta" style="justify-content:flex-start">
+        <a class="btn" href="https://flash.foxnet.live/">Web installer</a>
+        <a class="btn secondary" href="https://ota.foxnet.live/">Downloads</a>
+      </div>
+      <p class="note" style="margin-top:1.3rem"><strong>Note:</strong> installing replaces your OS and
+         erases the device. Verified boot means a locked bootloader only trusts the X-NIX signing key.
+         Back up your data first.</p>
+    </section>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      X-NIX · built on GrapheneOS ·
+      <a href="https://github.com/XNet-NGO/XNetOS">source</a> ·
+      <a href="https://flash.foxnet.live/">install</a> ·
+      <a href="https://ota.foxnet.live/">downloads</a> ·
+      <a href="mailto:admin@foxnet.live">admin@foxnet.live</a>
+    </div>
+  </footer>
+</body>
+</html>
