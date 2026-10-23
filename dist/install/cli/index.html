@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+        <title>CLI install guide | X-NIX</title>
+        <meta name="description" content="Command-line install guide for X-NIX on the Pixel 10 Pro XL."/>
+        <meta name="theme-color" content="#2a0f4a"/>
+        <meta name="color-scheme" content="dark light"/>
+        <meta property="og:title" content="CLI install guide | X-NIX"/>
+        <meta property="og:site_name" content="X-NIX"/>
+        <link rel="canonical" href="https://flash.foxnet.live/install/cli/"/>
+        <style>
+          :root { color-scheme: dark light; }
+          body { font-family: system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+                  max-width:52rem; margin:0 auto; padding:1.5rem 1.25rem 5rem; line-height:1.6;
+                  background:#15101c; color:#e9e3f2; }
+          a { color:#b98cff; }
+          h1 { font-size:2rem; } h1 .brand { color:#b98cff; }
+          h2 { margin-top:2.25rem; border-bottom:1px solid #3a2d52; padding-bottom:.3rem; }
+          button { background:linear-gradient(135deg,#4b1d8a,#7a3cc4); color:#fff; border:0;
+                    padding:.7rem 1.15rem; border-radius:.5rem; font-size:1rem; cursor:pointer; }
+          button:disabled { opacity:.45; cursor:not-allowed; }
+          progress { width:100%; height:1rem; }
+          code,pre { background:#231833; padding:.15rem .4rem; border-radius:.3rem; }
+          pre { padding:.8rem 1rem; overflow:auto; }
+          .banner { background:#2a0f4a; border:1px solid #4b1d8a; border-radius:.6rem;
+                     padding:.9rem 1.1rem; margin:1rem 0; }
+          strong { color:#d9c6ff; }
+          nav.top a { margin-right:1rem; }
+        </style>
+        
+    </head>
+    <body>
+        <header>
+            <p style="font-weight:700;letter-spacing:.15em;color:#b98cff;">X&nbsp;NIX</p>
+            <nav class="top"><a href="/">Web installer</a><a href="/install/cli/">CLI install</a></nav>
+        </header>
+
+        <main id="cli-install">
+            <h1><a href="#cli-install">CLI install guide</a></h1>
+
+            <p>This is a guide on installing X-NIX on the
+            <a href="#prerequisites">officially supported devices</a>. It can be followed
+            for both the <a href="https://ota.foxnet.live/">official releases</a> and <a href="https://github.com/XNet-NGO/XNetOS">custom
+            builds</a>. The <a href="/">web installer</a> is an
+            easier approach to installing the official releases via a browser with WebUSB
+            support.</p>
+
+            <p>We strongly recommend following these official instructions. The official guide has
+            a lot of collaborative effort put into covering all of the edge cases and is regularly
+            tested by many people on each supported OS. Following these instructions to the letter
+            without skipping, reordering or adding any steps will give you a proper X-NIX
+            installation unless there's a hardware issue. We strongly recommend against following
+            unofficial guides deviating in any way from the official instructions.</p>
+
+            <p>If you have trouble with the installation process, ask for help on the
+            <a href="https://github.com/XNet-NGO/XNetOS">X-NIX project on GitHub</a>. There are almost
+            always people around willing to help with it. Before asking for help, make an attempt
+            to follow the guide on your own and then ask for help with anything you get stuck
+            on.</p>
+
+            <nav id="table-of-contents">
+                <h2><a href="#table-of-contents">Table of contents</a></h2>
+
+                <ul>
+                    <li><a href="#prerequisites">Prerequisites</a></li>
+                    <li><a href="#enabling-oem-unlocking">Enabling OEM unlocking</a></li>
+                    <li><a href="#opening-terminal">Opening terminal</a></li>
+                    <li>
+                        <a href="#obtaining-fastboot">Obtaining fastboot</a>
+                        <ul>
+                            <li><a href="#standalone-platform-tools">Standalone platform-tools</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#checking-fastboot-version">Checking fastboot version</a></li>
+                    <li><a href="#flashing-as-non-root">Flashing as non-root</a></li>
+                    <li><a href="#working-around-fwupd-bugs-on-linux-distributions">Working around fwupd bugs on Linux distributions</a></li>
+                    <li><a href="#booting-into-the-bootloader-interface">Booting into the bootloader interface</a></li>
+                    <li><a href="#connecting-device">Connecting the device</a></li>
+                    <li><a href="#unlocking-the-bootloader">Unlocking the bootloader</a></li>
+                    <li><a href="#obtaining-openssh">Obtaining OpenSSH</a></li>
+                    <li><a href="#obtaining-factory-images">Obtaining factory images</a></li>
+                    <li>
+                        <a href="#flashing-factory-images">Flashing factory images</a>
+                        <ul>
+                            <li><a href="#troubleshooting">Troubleshooting</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#locking-the-bootloader">Locking the bootloader</a></li>
+                    <li>
+                        <a href="#post-installation">Post-installation</a>
+                        <ul>
+                            <li><a href="#booting">Booting</a></li>
+                            <li><a href="#disabling-oem-unlocking">Disabling OEM unlocking</a></li>
+                            <li>
+                                <a href="#verifying-installation">Verifying installation</a>
+                                <ul>
+                                    <li><a href="#verified-boot-key-hash">Verified boot key hash</a></li>
+                                    <li><a href="#hardware-based-attestation">Hardware-based attestation</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#further-information">Further information</a></li>
+                            <li><a href="#replacing-xnix-with-the-stock-os">Replacing X-NIX with the stock OS</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+
+            <section id="prerequisites">
+                <h2><a href="#prerequisites">Prerequisites</a></h2>
+
+                <p>You need a computer for running the CLI install process with at least 2GB of free
+                memory available and 32GB of free storage space. The web installer can be run on an
+                Android phone or tablet, unlike the command-line installation.</p>
+
+                <p>You need a USB cable for attaching the device to the computer performing the
+                installation. Whenever possible, use the high quality standards compliant USB-C
+                cable packaged with the device. If your computer doesn't have any USB-C ports,
+                you'll need a high quality USB-C to USB-A cable. You should avoid using a USB hub
+                such as the front panel on a desktop computer case. Connect directly to a rear port
+                on a desktop or the ports on a laptop. Many widely distributed USB cables and hubs
+                are broken and are the most common source of issues for installing X-NIX.</p>
+
+                <p>Installing from an OS in a virtual machine is not recommended. USB passthrough
+                is often not reliable. To rule out these problems, install from an OS running on
+                bare metal. Virtual machines are also often configured to have overly limited
+                memory and storage space.</p>
+
+                <p>Officially supported operating systems for the CLI install method:</p>
+
+                <ul>
+                    <li>Windows 10</li>
+                    <li>Windows 11</li>
+                    <li>macOS Sonoma (14)</li>
+                    <li>macOS Sequoia (15)</li>
+                    <li>macOS Tahoe (26)</li>
+                    <li>Arch Linux</li>
+                    <li>Debian 12 (bookworm)</li>
+                    <li>Debian 13 (trixie)</li>
+                    <li>Ubuntu 22.04 LTS</li>
+                    <li>Ubuntu 24.04 LTS</li>
+                    <li>Ubuntu 25.04</li>
+                    <li>Linux Mint 21 (follow Ubuntu 22.04 LTS instructions)</li>
+                    <li>Linux Mint 22 (follow Ubuntu 24.04 LTS instructions)</li>
+                    <li>Linux Mint Debian Edition 6 (follow Debian 12 instructions)</li>
+                </ul>
+
+                <p>Older end-of-life versions of these platforms can also be used but are not
+                officially supported.</p>
+
+                <p>Make sure your operating system is up-to-date before proceeding.</p>
+
+                <p>The <a href="/">web installer</a> is more portable and can be used
+                from Android, ChromeOS and X-NIX itself since it can run anywhere with a
+                browser with working WebUSB support.</p>
+
+                <p>You need one of the <a href="#prerequisites">officially supported
+                devices</a>. To make sure that the device can be unlocked to install X-NIX,
+                avoid carrier variants of the devices. Carrier variants of Pixels use the same stock
+                OS and firmware with a non-zero carrier id flashed onto the persist partition in the
+                factory. The carrier id activates carrier-specific configuration in the stock OS
+                including disabling carrier and bootloader unlocking. The carrier may be able to
+                remotely disable this, but their support staff may not be aware and they probably
+                won't do it. Get a carrier agnostic device to avoid the risk and potential hassle.
+                If you CAN figure out a way to unlock a carrier device, it isn't a problem as
+                X-NIX can just ignore the carrier id and the hardware is the same.</p>
+
+                <p>It's best practice to update the device before installing X-NIX to have
+                the latest firmware for connecting the device to the computer and performing the
+                early flashing process. Either way, X-NIX flashes the latest firmware early
+                in the installation process.</p>
+            </section>
+
+            <section id="enabling-oem-unlocking">
+                <h2><a href="#enabling-oem-unlocking">Enabling OEM unlocking</a></h2>
+
+                <p>OEM unlocking needs to be enabled from within the operating system.</p>
+
+                <p>Enable the developer options menu by going to <b>Settings&#160;> About phone/tablet</b> and repeatedly
+                pressing the <b>Build number</b> menu entry until developer mode is enabled.</p>
+
+                <p>Next, go to <b>Settings&#160;>
+                System&#160;> Developer options</b> and
+                toggle on the <b>OEM unlocking</b> setting. On device model variants (SKUs) which
+                support being sold as locked devices by carriers, enabling <b>OEM unlocking</b>
+                requires internet access so that the stock OS can check if the device was sold as
+                locked by a carrier.</p>
+
+                <p>For the Pixel 6a, OEM unlocking won't work with the version of the stock OS
+                from the factory. You need to update it to the June 2022 release or later via an
+                over-the-air update. After you've updated it you'll also need to factory reset
+                the device to fix OEM unlocking.</p>
+            </section>
+
+            <section id="opening-terminal">
+                <h2><a href="#opening-terminal">Opening terminal</a></h2>
+
+                <p>These instructions use command-line tools. Launch the terminal as you would any
+                other application. On Windows, launch a regular non-administrator instance of the
+                PowerShell terminal. Do not use the legacy Command Prompt or administrator variant
+                of PowerShell.</p>
+
+                <p>Use the same terminal for the whole installation process. If you close it,
+                you'll lose the setup of the environment for the installation.</p>
+
+                <p>On Windows, run the following command to remove PowerShell's legacy curl alias
+                for the current shell to avoid needing to reference it as <code>curl.exe</code>
+                instead of <code>curl</code>:</p>
+
+                <pre>Remove-Item Alias:Curl</pre>
+            </section>
+
+            <section id="obtaining-fastboot">
+                <h2><a href="#obtaining-fastboot">Obtaining fastboot</a></h2>
+
+                <p>You need an updated copy of the <code>fastboot</code> tool and the
+                directory containing it needs to be included in the <code>PATH</code>
+                environment variable. You can run <code>fastboot --version</code> to determine
+                the current version. It must be at least <code>35.0.1</code>. You can use a
+                distribution package for this, but most of them mistakenly package development
+                snapshots of fastboot, clobber the standard version scheme for platform-tools
+                (adb, fastboot, etc.) with their own scheme and don't keep it up-to-date
+                despite that being crucial.</p>
+
+                <p>On Arch Linux, install <code>android-tools</code> and skip the section below on
+                using the standalone release of platform-tools from Android:</p>
+
+                <pre>sudo pacman -S android-tools</pre>
+
+                <p>Debian and Ubuntu do not have a usable package for fastboot. Their packages for
+                these tools are both broken and many years out-of-date. Follow the instructions
+                below for platforms without a proper package.</p>
+
+                <section id="standalone-platform-tools">
+                    <h3><a href="#standalone-platform-tools">Standalone platform-tools</a></h3>
+
+                    <!-- https://developer.android.com/studio/releases/platform-tools -->
+
+                    <p>If your operating system doesn't include a usable version of fastboot,
+                    you can use the official standalone releases of platform-tools. This is
+                    our recommendation for most users. The flashing process won't work unless
+                    you follow these instructions including setting up PATH.</p>
+
+                    <p>To download, verify and extract the standalone platform-tools on Debian and
+                    Ubuntu:</p>
+
+                    <pre>sudo apt install libarchive-tools
+curl -O https://dl.google.com/android/repository/platform-tools_r35.0.2-linux.zip
+echo 'acfdcccb123a8718c46c46c059b2f621140194e5ec1ac9d81715be3d6ab6cd0a  platform-tools_r35.0.2-linux.zip' | sha256sum -c
+bsdtar xvf platform-tools_r35.0.2-linux.zip</pre>
+
+                    <p>To download, verify and extract the standalone platform-tools on macOS:</p>
+
+                    <pre>curl -O https://dl.google.com/android/repository/platform-tools_r35.0.2-darwin.zip
+echo 'SHA256 (platform-tools_r35.0.2-darwin.zip) = 1820078db90bf21628d257ff052528af1c61bb48f754b3555648f5652fa35d78' | shasum -c
+tar xvf platform-tools_r35.0.2-darwin.zip</pre>
+
+                    <p>To download, verify and extract the standalone platform-tools on Windows:</p>
+
+                    <pre>curl -O https://dl.google.com/android/repository/platform-tools_r35.0.2-win.zip
+(Get-FileHash platform-tools_r35.0.2-win.zip).hash -eq "2975a3eac0b19182748d64195375ad056986561d994fffbdc64332a516300bb9"
+tar xvf platform-tools_r35.0.2-win.zip</pre>
+
+                    <p>Next, add the tools to your <code>PATH</code> in the current shell so they can be
+                    used without referencing them by file path, enabling usage by the flashing script.</p>
+
+                    <p>On Debian, Ubuntu and macOS:</p>
+
+                    <pre>export PATH="$PWD/platform-tools:$PATH"</pre>
+
+                    <p>On Windows:</p>
+
+                    <pre>$env:Path = "$pwd\platform-tools;$env:Path"</pre>
+
+                    <p>This only changes <code>PATH</code> for the current shell and will need
+                    to be done again if you open a new terminal.</p>
+                </section>
+            </section>
+
+            <section id="checking-fastboot-version">
+                <h2><a href="#checking-fastboot-version">Checking fastboot version</a></h2>
+
+                <p>Check the output of <code>fastboot --version</code> before continuing.</p>
+
+                <p>Example of the output after following the instructions above for the
+                standalone platform-tools:</p>
+
+                <pre>fastboot version 35.0.2-12147458
+Installed as /home/username/platform-tools/fastboot</pre>
+            </section>
+
+            <section id="flashing-as-non-root">
+                <h2><a href="#flashing-as-non-root">Flashing as non-root</a></h2>
+
+                <p>On traditional Linux distributions, USB devices cannot be used as non-root
+                without udev rules for each type of device. This is not an issue for other
+                platforms.</p>
+
+                <p>On Arch Linux:</p>
+
+                <pre>sudo pacman -S android-udev</pre>
+
+                <p>On Debian and Ubuntu:</p>
+
+                <pre>sudo apt install android-sdk-platform-tools-common</pre>
+
+                <p>The udev rules on Debian and Ubuntu are very out-of-date but the package has
+                the rules needed for Pixel devices since the same USB IDs have been used for many
+                years.</p>
+            </section>
+
+            <section id="working-around-fwupd-bugs-on-linux-distributions">
+                <h2><a href="#working-around-fwupd-bugs-on-linux-distributions">Working around fwupd bugs on Linux distributions</a></h2>
+
+                <p>The fwupd software often used on Linux distributions for updating firmware is
+                known to incorrectly connect to arbitrary devices using the fastboot protocol which
+                will block using them for the intended purpose. This can result in receiving an
+                error about the USB device already being in use (claimed) when trying to connect to
+                it for the intended purpose.</p>
+
+                <p>You can stop fwupd with the following command:</p>
+
+                <pre>sudo systemctl stop fwupd.service</pre>
+
+                <p>This doesn't disable the service and it will start again on reboot.</p>
+            </section>
+
+            <section id="booting-into-the-bootloader-interface">
+                <h2><a href="#booting-into-the-bootloader-interface">Booting into the bootloader interface</a></h2>
+
+                <p>You need to boot your device into the bootloader interface. To do this, you need
+                to hold the volume down button while the device boots.</p>
+
+                <p>The easiest approach is to reboot the device and begin holding the volume down
+                button until it boots up into the bootloader interface.</p>
+
+                <p>Alternatively, turn off the device, then boot it up while holding the volume
+                down button during the boot process. You can either boot it with the power button
+                or by plugging it in as required in the next section.</p>
+
+                <p>This step is not complete until your device displays a red warning triangle
+                and the words "Fastboot Mode".  You must not press the device's power button
+                to activate the "Start" menu item, because the device must remain paused in
+                Fastboot mode for the <code>fastboot</code> command to connect to it.</p>
+            </section>
+
+            <section id="connecting-device">
+                <h2><a href="#connecting-device">Connecting the device</a></h2>
+
+                <p>Connect the device to the computer. On Linux, you'll need to do this again if
+                you didn't have the udev rules set up when you connected it.</p>
+
+                <p>Current Windows 10 and Windows 11 include a generic driver usable for fastboot
+                and no longer require installing a driver for installation on the Pixel 4a (5G) or
+                later. Outdated Windows versions will still need the driver for non-obsolete devices
+                too. You can obtain the driver from Windows Update which will detect it as an
+                optional update when the device is booted into the bootloader interface and
+                connected to the computer. Open Windows Update, run a check for updates and then
+                open the "View optional updates" interface. Install the driver for the Android
+                bootloader interface as an optional update, which will show up as "LeMobile Android
+                Device" due to USB ID overlap. An alternative approach to obtaining the Windows
+                fastboot driver is to obtain the <a href="https://developer.android.com/studio/run/win-usb">latest driver for
+                Pixels</a> from Google and then <a href="https://developer.android.com/studio/run/oem-usb#InstallingDriver">manually
+                install it with the Windows Device Manager</a>.</p>
+
+                <p>For the Pixel Tablet, disconnect it from the stand before continuing. The stand
+                uses USB to provide charging and audio output, but the tablet lacks support for
+                using both the stand and USB port at the same time.</p>
+            </section>
+
+            <section id="unlocking-the-bootloader">
+                <h2><a href="#unlocking-the-bootloader">Unlocking the bootloader</a></h2>
+
+                <p>Unlock the bootloader to allow flashing the OS and firmware:</p>
+
+                <pre>fastboot flashing unlock</pre>
+
+                <p>The command needs to be confirmed on the device and will wipe all data. Use one
+                of the volume buttons to switch the selection to accepting it and the power button
+                to confirm.</p>
+            </section>
+
+            <section id="obtaining-openssh">
+                <h2><a href="#obtaining-openssh">Obtaining openssh</a></h2>
+
+                <p>OpenSSH is used to verify the download of the OS beyond the security offered by
+                HTTPS.</p>
+
+                <p>macOS and Windows include OpenSSH in their base install so this isn't needed.</p>
+
+                <p>On Arch Linux:</p>
+
+                <pre>sudo pacman -S openssh</pre>
+
+                <p>On Debian and Ubuntu:</p>
+
+                <pre>sudo apt install openssh-client</pre>
+            </section>
+
+                        <section id="obtaining-factory-images">
+                <h2><a href="#obtaining-factory-images">Obtaining factory images</a></h2>
+
+                <p>Download the X-NIX factory image for your device from the
+                <a href="https://ota.foxnet.live/">X-NIX release server</a>. For the Pixel 10 Pro XL
+                (codename <code>mustang</code>), build <code>2026101600</code>:</p>
+
+                <pre>curl -O https://ota.foxnet.live/mustang/2026101600/mustang-factory-2026101600.zip
+curl -O https://ota.foxnet.live/mustang/2026101600/mustang-factory-2026101600.zip.sha256</pre>
+
+                <p>Verify the download against the published SHA-256 checksum before flashing:</p>
+
+                <pre>sha256sum -c mustang-factory-2026101600.zip.sha256</pre>
+
+                <p>This must print:</p>
+
+                <pre>mustang-factory-2026101600.zip: OK</pre>
+
+                <p>The factory image itself is cryptographically signed with the X-NIX signing keys
+                (verified-boot AVB key and release key); the checksum above only confirms the download
+                is intact. Verified boot enforces the signature on-device once the bootloader is locked.</p>
+            </section>
+
+            <section id="flashing-factory-images">
+                <h2><a href="#flashing-factory-images">Flashing factory images</a></h2>
+
+                <p>The initial install will be performed by flashing the factory images. This will
+                replace the existing OS installation and wipe all the existing data.</p>
+
+                <p>Next, extract the factory images.</p>
+
+                <p>On Linux:</p>
+
+                <pre>bsdtar xvf <var>DEVICE_NAME</var>-install-<var>VERSION</var>.zip</pre>
+
+                <p>On macOS and Windows:</p>
+
+                <pre>tar xvf <var>DEVICE_NAME</var>-install-<var>VERSION</var>.zip</pre>
+
+                <p>Move into the directory:</p>
+
+                <pre>cd <var>DEVICE_NAME</var>-install-<var>VERSION</var></pre>
+
+                <p>Flash the images with the flash-all script in the directory.</p>
+
+                <p>On Linux and macOS:</p>
+
+                <pre>bash flash-all.sh</pre>
+
+                <p>On Windows:</p>
+
+                <pre>./flash-all.bat</pre>
+
+                <p>Wait for the flashing process to complete. It will automatically handle
+                flashing the firmware, rebooting into the bootloader interface and flashing the OS.
+                Avoid interacting with the device until the flashing script is finished. Then,
+                proceed to <a href="#locking-the-bootloader">locking the bootloader</a> before using
+                the device as locking wipes the data again.</p>
+
+                <section id="troubleshooting">
+                    <h3><a href="#troubleshooting">Troubleshooting</a></h3>
+
+                    <p>The text output from a failed attempt at flashing will contain valuable
+                    diagnostic information which is essential in knowing where and how the process
+                    went wrong. Please provide this information when asking for help on the
+                    <a href="https://github.com/XNet-NGO/XNetOS">X-NIX project on GitHub</a>.</p>
+
+                    <p>A common issue on Linux distributions is that they mount the default temporary file
+                    directory <code>/tmp</code> as tmpfs which results in it being backed by memory and
+                    swap rather than persistent storage. By default, the size is 50% of the available
+                    virtual memory. This is often not enough for the flashing process, especially since
+                    <code>/tmp</code> is shared between applications and users. To use a different
+                    temporary directory if your <code>/tmp</code> doesn't have enough space available:</p>
+
+                    <pre>mkdir tmp &amp;&amp; TMPDIR="$PWD/tmp" ./flash-all.sh</pre>
+                </section>
+            </section>
+
+            <section id="locking-the-bootloader">
+                <h2><a href="#locking-the-bootloader">Locking the bootloader</a></h2>
+
+                <p>Locking the bootloader is important as it enables full verified boot. It also
+                prevents using fastboot to flash, format or erase partitions.  Verified boot will
+                detect modifications to any of the OS partitions and it will prevent reading any
+                modified or corrupted data. If changes are detected, error correction data is used
+                to attempt to obtain the original data at which point it's verified again which
+                makes verified boot robust to non-malicious corruption.</p>
+
+                <p>In the bootloader interface, set it to locked:</p>
+
+                <pre>fastboot flashing lock</pre>
+
+                <p>The command needs to be confirmed on the device and will wipe all data. Use one
+                of the volume buttons to switch the selection to accepting it and the power button
+                to confirm.</p>
+            </section>
+
+            <section id="post-installation">
+                <h2><a href="#post-installation">Post-installation</a></h2>
+
+                <section id="booting">
+                    <h3><a href="#booting">Booting</a></h3>
+
+                    <p>You've now successfully installed X-NIX and can boot it. Pressing the
+                    power button with the default Start option selected in the bootloader
+                    interface will boot the OS.</p>
+                </section>
+
+                <section id="disabling-oem-unlocking">
+                    <h3><a href="#disabling-oem-unlocking">Disabling OEM unlocking</a></h3>
+
+                    <p>During first setup, the final screen will contain a toggle regarding OEM
+                    unlocking which is checked by default. This will disable OEM unlocking, which is
+                    recommended.</p>
+
+                    <p>If you need to enable or disable OEM unlocking in the future, it can be done
+                    in the developer settings menu within the operating system.</p>
+                </section>
+
+                <section id="verifying-installation">
+                    <h3><a href="#verifying-installation">Verifying installation</a></h3>
+
+                    <p>The verified boot and attestation features provided by the supported
+                    devices can be used to verify that the hardware, firmware and X-NIX
+                    installation are genuine. Even if the computer you used to flash X-NIX
+                    was compromised and an attacker replaced X-NIX with their own malicious
+                    OS, it can be detected with these features.</p>
+
+                    <p>Verified boot verifies the entirety of the firmware and OS images on every
+                    boot. The public key for the firmware images is burned into fuses in the SoC at
+                    the factory. Firmware security updates also update the rollback index burned
+                    into fuses to provide rollback protection.</p>
+
+                    <p>The final firmware boot stage before the OS is responsible for verifying
+                    it. For the stock OS, it uses a hard-wired public key. Installing X-NIX
+                    flashes the X-NIX verified boot public key to the secure element. Each
+                    boot, this key is loaded and used to verify the OS. For both the stock OS and
+                    X-NIX, a rollback index based on the security patch level is loaded from
+                    the secure element to provide rollback protection.</p>
+
+                    
+
+                    <section id="hardware-based-attestation">
+                        <h3><a href="#hardware-based-attestation">Hardware-based attestation</a></h3>
+
+                        <p>X-NIX provides our Auditor app for using a combination of the
+                        verified boot and attestation features to verify that the hardware,
+                        firmware and operating system are genuine along with providing other
+                        useful data from the hardware and operating system.</p>
+
+                        <p>Since the purpose of Auditor is to obtain information about the device
+                        without trusting it to be honest, results aren't shown on the device being
+                        verified. You need a 2nd Android device running Auditor for local QR code
+                        based verification. You can also use our optional device integrity
+                        monitoring service for automatic scheduled verifications with support for
+                        email alerts.</p>
+
+                        <p>See the <a href="https://attestation.app/tutorial">Auditor tutorial</a>
+                        for a guide.</p>
+
+                        <p>Auditor is primarily based on a pairing model where it generates a
+                        hardware backed signing key and hardware backed attestation signing key
+                        and pins them as part of the initial verification. The first verification
+                        is bootstrapped based on chaining trust to one of the Android attestation
+                        roots. After the first verification, it provides a highly secure system
+                        for obtaining information about the device going forward. An attacker
+                        could bypass the initial verification with a leaked attestation key or by
+                        proxying to another device with the device model, OS and patch level that
+                        the user is expecting. Proxying to another device will be addressed in the
+                        future with optional support for the hardware serial number attestation
+                        feature.</p>
+                    </section>
+                </section>
+
+                <section id="further-information">
+                    <h3><a href="#further-information">Further information</a></h3>
+
+                    <p>Please look through the <a href="/">usage guide</a> and
+                    <a href="#prerequisites">FAQ</a> for more information. If you have further questions not
+                    covered by the site, open an issue on the <a href="https://github.com/XNet-NGO/XNetOS">X-NIX project on GitHub</a>.</p>
+                </section>
+
+                <section id="replacing-xnix-with-the-stock-os">
+                    <h3><a href="#replacing-xnix-with-the-stock-os">Replacing X-NIX with the stock OS</a></h3>
+
+                    <p>Installation of the stock OS via the stock factory images is the same process
+                    described above. However, before flashing and locking, there's an additional step
+                    to fully revert the device to a clean factory state.</p>
+
+                    <p>The X-NIX factory images flash a non-stock Android Verified Boot key which
+                    needs to be erased to fully revert back to a stock device state. Before flashing the
+                    stock factory images, you should boot the device into fastboot mode and make sure the
+                    bootloader is unlocked. Then erase the custom Android Verified Boot key to untrust it:</p>
+
+                    <pre>fastboot erase avb_custom_key</pre>
+                </section>
+            </section>
+        </main>
+        
+    </body>
+</html>

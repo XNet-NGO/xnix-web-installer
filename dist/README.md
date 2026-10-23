@@ -1,24 +1,27 @@
 # X-NIX Web Installer (standalone, rebranded)
 
-WebUSB browser flasher for X-NIX, derived from the GrapheneOS web installer
+WebUSB browser flasher + CLI install guide for X-NIX, derived from the GrapheneOS web installer
 (forked from GrapheneOS/grapheneos.org + GrapheneOS/fastboot.js).
 
-## What was changed from upstream
-- `js/web-install.js`: RELEASES_URL -> https://ota.foxnet.live ; brand strings -> X-NIX ;
-  fastboot import path -> ./fastboot/fastboot.min.mjs
-- `index.html`: standalone page (build macros/jinja removed), rebranded GrapheneOS -> X-NIX,
-  added unverified-image warning banner, dark purple X-NIX theme.
-- Engine `js/fastboot/fastboot.min.mjs` (+ vendor pako worker) vendored from upstream unchanged.
+## Pages
+- `index.html`            -> https://flash.foxnet.live/            (WebUSB web installer)
+- `install/index.html`    -> https://flash.foxnet.live/install/    (install landing)
+- `install/cli/index.html`-> https://flash.foxnet.live/install/cli/ (command-line guide, sha256 verify)
 
-## Deployment
-Served by Caddy at https://flash.foxnet.live (root = this dist/). It fetches the signed
-factory/install zip + channel metadata from https://ota.foxnet.live (the OTA server), which
-sends CORS/CORP headers permitting the cross-origin download.
+## Changes from upstream
+- web-install.js: RELEASES_URL -> https://ota.foxnet.live ; brand -> X-NIX ; fastboot import path fixed.
+- All pages: build macros/jinja removed (standalone), GrapheneOS -> X-NIX, dark purple theme.
+- Community/help links repointed to the public repo https://github.com/XNet-NGO/XNetOS ;
+  contact -> admin@foxnet.live ; social share links removed.
+- CLI "obtaining factory images": GrapheneOS SSH-signature verification replaced with our real
+  method (download factory zip + .sha256 from ota.foxnet.live, verify with `sha256sum -c`).
+- Dropped links to pages we don't host (/faq, /usage, mangled subdomains, allowed_signers).
+- fastboot engine (js/fastboot/fastboot.min.mjs + vendor pako worker) vendored from upstream unchanged.
 
-## Device support
-Currently gated to mustang (Pixel 10 Pro XL), build 2026101600. supportedDevices[] in
-web-install.js still lists all upstream Pixels but only mustang has an X-NIX release published.
+## Served by
+Caddy on the OTA box (EIP 52.73.146.254). ota.foxnet.live sends CORS/CORP headers so the installer
+can fetch release zips cross-origin. Auto-TLS via Let's Encrypt.
 
 ## SAFETY
-The installer's lock-bootloader step is retained. For a FIRST flash of an unproven build, flash
-UNLOCKED, boot-test, and only lock after confirming the OS boots. See the banner on the page.
+Lock-bootloader step retained. For a FIRST flash of an unproven build: flash UNLOCKED, boot-test,
+then lock. See the warning banner on the installer page.

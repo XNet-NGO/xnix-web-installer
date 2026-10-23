@@ -3,33 +3,31 @@
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-        <title>Web installer | Install | X-NIX</title>
-        <meta name="description" content="Web-based installer for X-NIX, a hardened GrapheneOS-derived mobile OS."/>
+        <title>Web installer | X-NIX</title>
+        <meta name="description" content="Web-based WebUSB installer for X-NIX, a hardened GrapheneOS-derived mobile OS."/>
         <meta name="theme-color" content="#2a0f4a"/>
         <meta name="color-scheme" content="dark light"/>
-        <meta property="og:title" content="X-NIX web installer"/>
-        <meta property="og:description" content="Web-based installer for X-NIX, a hardened GrapheneOS-derived mobile OS."/>
-        <meta property="og:type" content="website"/>
+        <meta property="og:title" content="Web installer | X-NIX"/>
         <meta property="og:site_name" content="X-NIX"/>
-        <meta property="og:url" content="https://flash.foxnet.live/"/>
         <link rel="canonical" href="https://flash.foxnet.live/"/>
         <style>
           :root { color-scheme: dark light; }
-          body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-                 max-width: 52rem; margin: 0 auto; padding: 1.5rem 1.25rem 5rem;
-                 line-height: 1.6; background: #15101c; color: #e9e3f2; }
-          a { color: #b98cff; }
-          h1 { font-size: 2rem; letter-spacing: .02em; }
-          h1 .brand { color: #b98cff; }
-          h2 { margin-top: 2.25rem; border-bottom: 1px solid #3a2d52; padding-bottom: .3rem; }
-          button { background: linear-gradient(135deg,#4b1d8a,#7a3cc4); color:#fff; border:0;
-                   padding:.7rem 1.15rem; border-radius:.5rem; font-size:1rem; cursor:pointer; }
+          body { font-family: system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+                  max-width:52rem; margin:0 auto; padding:1.5rem 1.25rem 5rem; line-height:1.6;
+                  background:#15101c; color:#e9e3f2; }
+          a { color:#b98cff; }
+          h1 { font-size:2rem; } h1 .brand { color:#b98cff; }
+          h2 { margin-top:2.25rem; border-bottom:1px solid #3a2d52; padding-bottom:.3rem; }
+          button { background:linear-gradient(135deg,#4b1d8a,#7a3cc4); color:#fff; border:0;
+                    padding:.7rem 1.15rem; border-radius:.5rem; font-size:1rem; cursor:pointer; }
           button:disabled { opacity:.45; cursor:not-allowed; }
           progress { width:100%; height:1rem; }
-          code, pre { background:#231833; padding:.15rem .4rem; border-radius:.3rem; }
+          code,pre { background:#231833; padding:.15rem .4rem; border-radius:.3rem; }
+          pre { padding:.8rem 1rem; overflow:auto; }
           .banner { background:#2a0f4a; border:1px solid #4b1d8a; border-radius:.6rem;
-                    padding:.9rem 1.1rem; margin:1rem 0; }
+                     padding:.9rem 1.1rem; margin:1rem 0; }
           strong { color:#d9c6ff; }
+          nav.top a { margin-right:1rem; }
         </style>
         <script type="module" src="/js/fastboot/fastboot.min.mjs"></script>
         <script type="module" src="/js/web-install.js"></script>
@@ -37,17 +35,18 @@
     <body>
         <header>
             <p style="font-weight:700;letter-spacing:.15em;color:#b98cff;">X&nbsp;NIX</p>
+            <nav class="top"><a href="/">Web installer</a><a href="/install/cli/">CLI install</a></nav>
         </header>
 
         <main id="web-install">
             <h1><span class="brand">X-NIX</span> Web installer</h1><p class="banner"><strong>Warning:</strong> flashing unlocks and erases your device. This installs X-NIX (build 2026101600) for the Pixel 10 Pro XL (mustang). Do not lock the bootloader until you have confirmed the OS boots correctly.</p>
 
             <p>This is the WebUSB-based installer for X-NIX and is the recommended approach
-            for most users. The <a href="/install/cli">command-line installation guide</a> is the
+            for most users. The <a href="/install/cli/">command-line installation guide</a> is the
             more traditional approach to installing X-NIX.</p>
 
             <p>If you have trouble with the installation process, ask for help on the
-            <a href="/contact#community">X-NIX support channel</a>. There are almost
+            <a href="https://github.com/XNet-NGO/XNetOS">X-NIX project on GitHub</a>. There are almost
             always people around willing to help with it. Before asking for help, make an attempt
             to follow the guide on your own and then ask for help with anything you get stuck
             on.</p>
@@ -158,7 +157,7 @@
                 prevent the web installer from having enough storage space to extract the
                 downloaded release.</p>
 
-                <p>You need one of the <a href="/faq#supported-devices">officially supported
+                <p>You need one of the <a href="#prerequisites">officially supported
                 devices</a>. To make sure that the device can be unlocked to install X-NIX,
                 avoid carrier variants of the devices. Carrier variants of Pixels use the same stock
                 OS and firmware with a non-zero carrier id flashed onto the persist partition in the
@@ -427,10 +426,9 @@
                 <section id="further-information">
                     <h3><a href="#further-information">Further information</a></h3>
 
-                    <p>Please look through the <a href="/usage">usage guide</a> and
-                    <a href="/faq">FAQ</a> for more information. If you have further questions not
-                    covered by the site, join the <a href="/contact#community">official X-NIX
-                    chat channels</a> and ask the questions in the appropriate channel.</p>
+                    <p>Please look through the <a href="/">usage guide</a> and
+                    <a href="#prerequisites">FAQ</a> for more information. If you have further questions not
+                    covered by the site, open an issue on the <a href="https://github.com/XNet-NGO/XNetOS">X-NIX project on GitHub</a>.</p>
                 </section>
 
                 <section id="replacing-xnix-with-the-stock-os">
